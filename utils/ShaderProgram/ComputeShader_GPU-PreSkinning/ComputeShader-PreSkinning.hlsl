@@ -2,6 +2,8 @@
 //Used in Unity ComputeShader-GPU-PreSkinning.
 //Special thanks to SinsOfSeven, SpectrumQT (I learned a lot of HLSL syntax and usage from their github).
 
+//TODO 实际测试完全用不了
+
 //cs-t0 Position数据
 Buffer<float4> t0 : register(t0);
 
@@ -223,11 +225,12 @@ void main(uint3 vThreadID : SV_DispatchThreadID)
     r2.z = dot(r4.xyz, r3.xyz);
 
     //存储POSITION数据r6.xyzx到u0.xyz，偏移为r0.x
-    u0[r0.x].xyz = r6.xyz;
+    u0[r0.x].xyzw = r6.xyzx;
+    //这里用索引存储的原因是RWBuffer无法使用Store命令
     //store_raw u0.xyz, r0.x, r6.xyzx
 
     //存储NORMAL数据r1.xyzx到u0.xyz，偏移为r0.y
-    u0[r0.y].xyz = r1.xyz;
+    u0[r0.y].xyzw = r1.xyzx;
     //store_raw u0.xyz, r0.y, r1.xyzx
 
     //这一步是把输入时候的TANGENT的w分量复制过来，用于不做修改直接输出，因为TANGENT.w分量是固定的
